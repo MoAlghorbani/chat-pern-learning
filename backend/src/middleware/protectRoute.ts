@@ -20,7 +20,6 @@ declare global {
 const protectRoute = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const token = req.cookies.jwt;
-
 		if (!token) {
 			return res.status(401).json({ error: "Unauthorized - No token provided" });
 		}
@@ -29,7 +28,7 @@ const protectRoute = async (req: Request, res: Response, next: NextFunction) => 
 
 		if (!decoded) {
 			return res.status(401).json({ error: "Unauthorized - Invalid Token" });
-		}
+		} 
 
 		const user = await prisma.user.findUnique({
 			where: { id: decoded.userId },

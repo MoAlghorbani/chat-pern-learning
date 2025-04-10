@@ -2,10 +2,11 @@ import { Request, Response } from "express";
 import prisma from "../db/prisma.js";
 import bcryptjs from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
-// import generateToken from "../utils/generateToken.js";
 
 export const signup = async (req: Request, res: Response) => {
 	try {
+		console.log('signup');
+		
 		const { fullName, username, password, confirmPassword, gender } = req.body;
 
 		if (!fullName || !username || !password || !confirmPassword || !gender) {
@@ -17,7 +18,6 @@ export const signup = async (req: Request, res: Response) => {
 		}
 
 		const user = await prisma.user.findUnique({ where: { username } });
-
 		if (user) {
 			return res.status(400).json({ error: "Username already exists" });
 		}
@@ -38,7 +38,6 @@ export const signup = async (req: Request, res: Response) => {
 				profilePic: gender === "male" ? boyProfilePic : girlProfilePic,
 			},
 		});
-
 		if (newUser) {
 			// generate token in a sec
 			generateToken(newUser.id, res);
@@ -48,6 +47,7 @@ export const signup = async (req: Request, res: Response) => {
 				fullName: newUser.fullName,
 				username: newUser.username,
 				profilePic: newUser.profilePic,
+				message: "User created successfully"
 			});
 		} else {
 			res.status(400).json({ error: "Invalid user data" });
